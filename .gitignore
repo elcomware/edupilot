@@ -1,0 +1,39 @@
+# Application binaries
+/dist/
+/build/output/
+/cmd/desktop/build/bin/
+*.exe
+*.msi
+
+# EduPilot data (never inside the repository)
+*.db
+*.db-wal
+*.db-shm
+/backups/
+/logs/
+
+# Dependencies
+node_modules/
+/frontend/dist/
+vendor/
+
+# Wails
+/frontend/wailsjs/
+/cmd/desktop/frontend/wailsjs/
+/cmd/desktop/frontend/dist/*
+!/cmd/desktop/frontend/dist/.gitkeep
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local tool output
+*.log
+!go.sum
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

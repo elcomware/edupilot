@@ -1,0 +1,146 @@
+version: '3'
+
+vars:
+  APP: edupilot
+  FRONTEND_DIR: frontend
+  DESKTOP_DIR: cmd/desktop
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install Go and frontend dependencies
+    cmds:
+      - go mod download
+      - cd {{.FRONTEND_DIR}} && npm install
+
+  dev:
+    desc: Run the desktop app with frontend hot reload
+    cmds:
+      - cd {{.FRONTEND_DIR}} && npm run dev
+    dir: '{{.DESKTOP_DIR}}'
+
+  build:frontend:
+    desc: Production frontend build
+    cmds:
+      - npm run build
+    dir: '{{.FRONTEND_DIR}}'
+
+  build:desktop-assets:
+    desc: Copy the frontend build into the desktop host for embedding
+    cmds:
+      - xcopy /E /I /Y /Q "{{.FRONTEND_DIR}}\dist" "{{.DESKTOP_DIR}}\frontend\dist"
+
+  build:go:
+    desc: Build the Go binaries
+    deps: [build:frontend, build:desktop-assets]
+    cmds:
+      - go build -o build/output/{{.APP}}.exe ./cmd/desktop
+      - go build -o build/output/{{.APP}}-server.exe ./cmd/server
+
+  build:wails:
+    desc: Build the Windows desktop application
+    cmds:
+      - wails3 build -s -clean
+    dir: '{{.DESKTOP_DIR}}'
+
+  build:
+    desc: Full production build (frontend, Go, installer)
+    deps: [build:go]
+
+  installer:
+    desc: Build the Windows installer
+    deps: [build:go]
+    cmds:
+      - wails3 build -nsis
+    dir: '{{.DESKTOP_DIR}}'
+
+  lint:
+    desc: Lint Go and frontend
+    cmds:
+      - go vet ./...
+      - npm run lint
+    dir: '{{.FRONTEND_DIR}}'
+
+  fmt:
+    desc: Format Go and frontend sources
+    cmds:
+      - go fmt ./...
+      - npm run format
+    dir: '{{.FRONTEND_DIR}}'
+
+  test:unit:
+    desc: Domain unit tests
+    cmds:
+      - go test ./... -short
+
+  test:integration:
+    desc: SQLite repository and application tests
+    cmds:
+      - go test ./... -run Integration -count=1
+
+  test:invariants:
+    desc: Core financial invariant tests (debits=credits, immutability, allocation, numbering)
+    cmds:
+      - go test ./tests/invariants/... -count=1
+
+  test:migration:
+    desc: Old database to new database migration tests
+    cmds:
+      - go test ./tests/migration/... -count=1
+
+  test:frontend:
+    desc: Frontend component and interaction tests
+    cmds:
+      - npm run test
+    dir: '{{.FRONTEND_DIR}}'
+
+  test:backup:
+    desc: Backup, restore and verify tests
+    cmds:
+      - go test ./tests/backup/... -count=1
+
+  test:sync:
+    desc: Offline, reconnect and reconcile tests
+    cmds:
+      - go test ./tests/sync/... -count=1
+
+  test:security:
+    desc: Permission boundary and tenant isolation tests
+    cmds:
+      - go test ./tests/security/... -count=1
+
+  test:
+    desc: Run the full test suite
+    cmds:
+      - task: test:unit
+      - task: test:integration
+      - task: test:invariants
+      - task: test:migration
+      - task: test:frontend
+      - task: test:backup
+      - task: test:sync
+      - task: test:security
+
+  check:
+    desc: Lint plus the test suite that gates a release
+    cmds:
+      - task: lint
+      - task: test
+
+  pipeline:
+    desc: Release pipeline
+    cmds:
+      - task: lint
+      - task: test
+      - task: build
+      - task: installer
+
+  clean:
+    desc: Remove build output
+    cmds:
+      - rmdir /s /q build/output 2>nul
+      - rmdir /s /q {{.FRONTEND_DIR}}/dist 2>nul

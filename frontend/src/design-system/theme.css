@@ -1,0 +1,195 @@
+/**
+ * EduPilot design system.
+ *
+ * Tailwind v4 is configured in CSS, not JavaScript: there is no tailwind.config
+ * file. `@theme inline` publishes the semantic tokens below as utilities
+ * (bg-surface, text-ink, border-line, …), and each skin redefines the same
+ * token names. A component never references a skin directly, so a school can
+ * change the whole application appearance by setting two attributes on <html>.
+ */
+@import 'tailwindcss';
+
+@theme inline {
+  --color-canvas: var(--ep-canvas);
+  --color-surface: var(--ep-surface);
+  --color-surface-muted: var(--ep-surface-muted);
+  --color-line: var(--ep-line);
+  --color-line-strong: var(--ep-line-strong);
+
+  --color-ink: var(--ep-ink);
+  --color-ink-muted: var(--ep-ink-muted);
+  --color-on-accent: var(--ep-on-accent);
+
+  --color-accent: var(--ep-accent);
+  --color-accent-hover: var(--ep-accent-hover);
+  --color-accent-subtle: var(--ep-accent-subtle);
+
+  --color-positive: var(--ep-positive);
+  --color-positive-subtle: var(--ep-positive-subtle);
+  --color-warning: var(--ep-warning);
+  --color-warning-subtle: var(--ep-warning-subtle);
+  --color-negative: var(--ep-negative);
+  --color-negative-subtle: var(--ep-negative-subtle);
+  --color-neutral-subtle: var(--ep-neutral-subtle);
+
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Mono', ui-monospace, monospace;
+
+  --spacing-sidebar: 260px;
+  --spacing-header: 48px;
+  --spacing-row: 30px;
+
+  --radius-control: 3px;
+  --radius-panel: 5px;
+  --radius-dialog: 8px;
+
+  --shadow-hairline: 0 1px 2px rgb(27 36 48 / 8%);
+  --shadow-float: 0 4px 12px rgb(27 36 48 / 12%);
+}
+
+/* ------------------------------------------------------------------ skins -- */
+
+/**
+ * Navy is the default professional skin: cool blues, high contrast, the
+ * look of administrative software.
+ */
+:root,
+[data-skin='navy'] {
+  color-scheme: light;
+
+  --ep-canvas: #f6f7f9;
+  --ep-surface: #ffffff;
+  --ep-surface-muted: #f1f3f5;
+  --ep-line: #dfe3e8;
+  --ep-line-strong: #c4cbd4;
+
+  --ep-ink: #1b2430;
+  --ep-ink-muted: #5c6875;
+  --ep-on-accent: #ffffff;
+
+  --ep-accent: #1f4e79;
+  --ep-accent-hover: #163a5c;
+  --ep-accent-subtle: #e8f0f7;
+
+  --ep-positive: #1c7a4a;
+  --ep-positive-subtle: #e6f4ec;
+  --ep-warning: #a5620a;
+  --ep-warning-subtle: #fbf1e2;
+  --ep-negative: #a32020;
+  --ep-negative-subtle: #fbeaea;
+  --ep-neutral-subtle: #eceff2;
+}
+
+/**
+ * Latte is the warm skin: cream surfaces, toasted browns and caramel
+ * highlights. It exists because EduPilot is used all day by staff in
+ * classrooms, where a softer palette is easier to read.
+ */
+[data-skin='latte'] {
+  color-scheme: light;
+
+  --ep-canvas: #faf6f0;
+  --ep-surface: #fffdfa;
+  --ep-surface-muted: #f3ece2;
+  --ep-line: #e7dccc;
+  --ep-line-strong: #d3c2a8;
+
+  --ep-ink: #3b2c1f;
+  --ep-ink-muted: #7a6753;
+  --ep-on-accent: #fffaf4;
+
+  --ep-accent: #8a5a2b;
+  --ep-accent-hover: #6d451f;
+  --ep-accent-subtle: #f2e6d6;
+
+  --ep-positive: #4d6b3a;
+  --ep-positive-subtle: #eaf0e1;
+  --ep-warning: #9a6a12;
+  --ep-warning-subtle: #f8efdb;
+  --ep-negative: #9c3a2c;
+  --ep-negative-subtle: #f7e6e1;
+  --ep-neutral-subtle: #efe7db;
+}
+
+/* ------------------------------------------------------------------ modes -- */
+
+[data-mode='dark'] {
+  color-scheme: dark;
+}
+
+/**
+ * Dark values are defined per skin because a dark navy and a dark latte are
+ * not the same colour: the accent keeps its hue while the surfaces go neutral.
+ */
+[data-skin='navy'][data-mode='dark'] {
+  --ep-canvas: #12171d;
+  --ep-surface: #1a212a;
+  --ep-surface-muted: #222b36;
+  --ep-line: #2c3644;
+  --ep-line-strong: #3d4a5c;
+
+  --ep-ink: #e6ebf1;
+  --ep-ink-muted: #9aa7b6;
+  --ep-on-accent: #0d1116;
+
+  --ep-accent: #5b9bd5;
+  --ep-accent-hover: #7fb2e0;
+  --ep-accent-subtle: #1e2c3a;
+
+  --ep-positive: #6cc38d;
+  --ep-positive-subtle: #16301f;
+  --ep-warning: #e0ac5a;
+  --ep-warning-subtle: #33260f;
+  --ep-negative: #e08585;
+  --ep-negative-subtle: #33191b;
+  --ep-neutral-subtle: #1f2833;
+}
+
+[data-skin='latte'][data-mode='dark'] {
+  --ep-canvas: #17120d;
+  --ep-surface: #211a13;
+  --ep-surface-muted: #2a2119;
+  --ep-line: #3a2e22;
+  --ep-line-strong: #503f2e;
+
+  --ep-ink: #f2e7d9;
+  --ep-ink-muted: #b6a289;
+  --ep-on-accent: #17120d;
+
+  --ep-accent: #d8a063;
+  --ep-accent-hover: #e8b681;
+  --ep-accent-subtle: #33251a;
+
+  --ep-positive: #a3c686;
+  --ep-positive-subtle: #23301a;
+  --ep-warning: #e2b969;
+  --ep-warning-subtle: #332a12;
+  --ep-negative: #e08f7f;
+  --ep-negative-subtle: #331d18;
+  --ep-neutral-subtle: #271f18;
+}
+
+/* ------------------------------------------------------------------- base -- */
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Amounts in a school ledger are read in columns, so digits must align. */
+  .tabular {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
